@@ -3,6 +3,7 @@
 namespace App\OBS;
 
 use GuzzleHttp\Client as HttpClient;
+use SimpleXMLElement;
 
 class Client
 {
@@ -33,9 +34,9 @@ class Client
     }
 
     /**
-     * Search published binaries in OBS instance
+     * Search published binaries in OBS instance.
      *
-     * @
+     * @param string[] $keywords
      * @return App\OBS\OBSBinary[]
      */
     public function searchBinaries($keywords)
@@ -43,11 +44,22 @@ class Client
         $query_string = join("','", $keywords);
         $distribution = 'openSUSE:Factory';
         $xpath = "contains-ic(@name, '$query_string') and path/project='$distribution'";
+
         $res = $this->request('GET', '/search/published/binary/id', [
             'query' => [
                 'match' => $xpath
             ]
         ]);
-        return $res->getBody();
+        $body = $res->getBody();
+
+        $xml = new SimpleXMLElement($body);
+        $items = $xml->xpath('binary');
+        $binaries = [];
+        foreach ($items as $item) {
+            $binary = (array)$item;
+            $binaries[] = $binary['@attributes'];
+        }
+
+        return $binaries;
     }
 }

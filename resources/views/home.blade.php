@@ -1,7 +1,5 @@
 @extends('layouts.app')
 
 @section('content')
-<pre>
-{{ $data }}
-</pre>
+<div id="home-root"></div>
 @endsection

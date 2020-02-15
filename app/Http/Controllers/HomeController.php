@@ -11,12 +11,19 @@ class HomeController extends Controller
     /**
      * Show the application dashboard.
      *
+     * @param  Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index(Request $request)
     {
-        $client = new Client(config('obs.apiroot'), config('obs.username'), config('obs.password'));
-        $data = $client->searchBinaries(['retro', 'nes']);
-        return view('home', ['data' => $data]);
+        if ($request->q) {
+            $keywords = preg_split("/[\s,-_.]+/", $request->q);
+            if ($keywords) {
+                $client = new Client(config('obs.apiroot'), config('obs.username'), config('obs.password'));
+                $binaries = $client->searchBinaries($keywords);
+                return view('search', compact('binaries'));
+            }
+        }
+        return view('home');
     }
 }
