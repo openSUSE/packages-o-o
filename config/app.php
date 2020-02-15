@@ -13,7 +13,19 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'Packages'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Logo URL
+    |--------------------------------------------------------------------------
+    |
+    | This value is the URL of logo of your application. This value is used when
+    | the framework needs to place the application's logo in a navbar or
+    | any other location as required by the application or its packages.
+    |
+    */
+    'logo' => env('APP_LOGO', 'https://static.opensuse.org/chameleon/dist/images/logo/logo-white.svg'),
 
     /*
     |--------------------------------------------------------------------------
