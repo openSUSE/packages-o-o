@@ -66,15 +66,19 @@ class Client
      *
      * @param string[] $keywords
      * @param string $distro
+     * @param string $arch
      * @return App\OBS\OBSBinary[]
      */
-    public function searchBinaries($keywords, $distro)
+    public function searchBinaries($keywords, $distro, $arch)
     {
         $query_string = join("','", $keywords);
         if (empty($distro)) {
             $distro = 'openSUSE:Factory';
         }
-        $xpath = "contains-ic(@name, '$query_string') and path/project='$distro'";
+        if (empty($arch)) {
+            $arch = 'x86_64';
+        }
+        $xpath = "contains-ic(@name, '$query_string') and (@arch='$arch' or @arch='noarch') and path/project='$distro'";
 
         $res = $this->request('GET', '/search/published/binary/id', [
             'query' => [

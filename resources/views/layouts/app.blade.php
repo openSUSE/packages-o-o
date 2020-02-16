@@ -21,7 +21,8 @@
 
     <!-- Data -->
     <script>
-        var distros = {!! json_encode(config('distros')) !!};
+        var distros = {!! json_encode(config('obs.distros')) !!};
+        var archs = {!! json_encode(config('obs.archs')) !!};
     </script>
 </head>
 <body>
@@ -39,6 +40,7 @@
                 <!-- Left Side Of Navbar -->
                 <form class="form-inline mr-auto" action="/">
                     <div id="distro-select-root" class="mr-md-2"></div>
+                    <div id="arch-select-root" class="mr-md-2"></div>
                     <input class="form-control" type="search" name="q" value="{{ request('q') }}" placeholder="Search packages..." aria-label="Search">
                     <button class="btn btn-success my-2 my-sm-0" type="submit">Search</button>
                 </form>
