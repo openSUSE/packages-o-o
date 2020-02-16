@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import './SearchResult.css';
-import { getPackageNames, getProjectNames, getBinaries } from './binaries';
-import PackageList from './PackageList';
+import { getPackageNames, getProjectNames, getBinaries, getBinaryNames } from './binaries';
+import BinaryNamesList from './BinaryNamesList';
+import ProjectsList from './ProjectsList';
+import PackagesList from './PackagesList';
 import PackageDetails from './PackageDetails';
 
+console.log(binaries);
 const packages = getPackageNames(binaries);
 
 export default function SearchResult() {
@@ -17,15 +20,19 @@ export default function SearchResult() {
         </div>
     }
 
-    const [selectedPackage, selectPackage] = useState('');
-    const [selectedProject, selectProject] = useState('');
-    const projects = getProjectNames(binaries, selectedPackage);
-    const packageBinaries = getBinaries(binaries, selectedPackage, selectedProject);
+    const [packageName, selectPackageName] = useState('');
+    const [project, selectProject] = useState('');
+    const [binaryName, selectBinaryName] = useState('');
+
+    const projects = getProjectNames(binaries, packageName);
+    const binaryNames = getBinaryNames(binaries, packageName, project);
+    const packageBinaries = getBinaries(binaries, packageName, project, binaryName);
 
     return (
-        <div className="search-result">
-            <PackageList packages={packages} selected={selectedPackage} select={selectPackage} />
-            <PackageList packages={projects} selected={selectedProject} select={selectProject} />
+        <div className="card-group search-result">
+            <PackagesList packages={packages} selected={packageName} select={selectPackageName} />
+            <ProjectsList projects={projects} selected={project} select={selectProject} />
+            <BinaryNamesList names={binaryNames} selected={binaryName} select={selectBinaryName} />
             <PackageDetails binaries={packageBinaries} />
         </div>
     );

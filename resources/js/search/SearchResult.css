@@ -1,15 +1,15 @@
 .search-result {
-    display: flex;
     height: calc(100vh - 56px);
-    align-items: stretch;
+    flex-wrap: nowrap;
 }
 
-.search-result > div {
+.search-result > .card {
+    flex: 0 1 250px;
+}
+
+.search-result > .card > .list-group,
+.search-result > .card > .card-body {
     overflow: auto;
-}
-
-.search-result > .list-group {
-    flex: 0 1 300px;
 }
 
 .search-result > .package-details {
