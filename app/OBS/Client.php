@@ -39,9 +39,10 @@ class Client
     /**
      * Filter out the following binaries:
      * 1. Ghost packages: the project has been deleted but binaries still exist.
-     * 2. -debuginfo packages: only experts need it.
-     * 3. -buildsymbols packages: only experts need it.
-     * 4. -debugsource packages: only exports need it.
+     * 2. Source packages: they are rarely used.
+     * 3. -buildsymbols packages: only experts need them.
+     * 4. -debuginfo packages: only exports need them.
+     * 5. -debugsource packages: only experts need them.
      */
     public static function filterBinaries($binaries)
     {
@@ -52,6 +53,7 @@ class Client
                 && substr($binary['name'], -13) !== '-buildsymbols'
                 && substr($binary['name'], -10) !== '-debuginfo'
                 && substr($binary['name'], -12) !== '-debugsource'
+                && $binary['arch'] !== 'src'
                 ) {
                 $new_array[] = $binary;
             }
