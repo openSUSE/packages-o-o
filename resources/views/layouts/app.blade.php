@@ -18,6 +18,11 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <!-- Data -->
+    <script>
+        var distros = {!! json_encode(config('distros')) !!};
+    </script>
 </head>
 <body>
     <div id="app">
@@ -33,12 +38,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <!-- Left Side Of Navbar -->
                 <form class="form-inline mr-auto" action="/">
-                    <select class="custom-select mr-md-2">
-                        <option selected >openSUSE Tumbleweed</option>
-                        <option value="1">openSUSE Leap 15.2</option>
-                        <option value="2">openSUSE Leap 15.1</option>
-                        <option value="3">openSUSE Leap 15.0</option>
-                    </select>
+                    <div id="distro-select-root" class="mr-md-2"></div>
                     <input class="form-control" type="search" name="q" value="{{ request('q') }}" placeholder="Search packages..." aria-label="Search">
                     <button class="btn btn-success my-2 my-sm-0" type="submit">Search</button>
                 </form>

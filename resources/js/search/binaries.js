@@ -8,6 +8,6 @@ export function getProjectNames(binaries, packageName) {
     return uniq(binaries.filter(b => b.name === packageName).map(b => b.project));
 }
 
-export function getBinary(binaries, packageName, projectName) {
-    return binaries.find(b => b.name === packageName && b.project === projectName);
+export function getBinaries(binaries, packageName, projectName) {
+    return binaries.filter(b => b.name === packageName && b.project === projectName);
 }

@@ -2,7 +2,9 @@
 
 namespace App\OBS;
 
+use ErrorException;
 use GuzzleHttp\Client as HttpClient;
+use GuzzleHttp\Exception\ClientException;
 use SimpleXMLElement;
 
 class Client
@@ -25,7 +27,8 @@ class Client
      *
      * @return GuzzleHttp\Response
      */
-    public function request($method = 'GET', $path = '/', $options = []) {
+    public function request($method = 'GET', $path = '/', $options = [])
+    {
         $full_url = $this->apiroot.$path;
         $new_options = array_merge($options, [
             'auth' => [$this->username, $this->password]
@@ -37,13 +40,16 @@ class Client
      * Search published binaries in OBS instance.
      *
      * @param string[] $keywords
+     * @param string $distro
      * @return App\OBS\OBSBinary[]
      */
-    public function searchBinaries($keywords)
+    public function searchBinaries($keywords, $distro)
     {
         $query_string = join("','", $keywords);
-        $distribution = 'openSUSE:Factory';
-        $xpath = "contains-ic(@name, '$query_string') and path/project='$distribution'";
+        if (empty($distro)) {
+            $distro = 'openSUSE:Factory';
+        }
+        $xpath = "contains-ic(@name, '$query_string') and path/project='$distro'";
 
         $res = $this->request('GET', '/search/published/binary/id', [
             'query' => [
@@ -61,5 +67,50 @@ class Client
         }
 
         return $binaries;
+    }
+
+    public function fetchBinaryFileInfo($binary)
+    {
+        try {
+            $project = $binary['project'];
+            $repository = $binary['repository'];
+            $arch = $binary['arch'];
+            $package = $binary['package'];
+            $filename = $binary['filename'];
+        } catch (ErrorException $e) {
+            return null;
+        }
+
+        if ($arch === 'src') {
+            return null;
+        }
+
+        try {
+            $res = $this->request('GET', "/build/$project/$repository/$arch/$package/$filename", [
+                'query' => [
+                    'view' => 'fileinfo'
+                ]
+            ]);
+            $body = $res->getBody();
+
+            $xml = new SimpleXMLElement($body);
+
+            $fileinfo = [
+                'name' => (string)$xml->name,
+                'version' => (string)$xml->version,
+                'release' => (string)$xml->release,
+                'arch' => (string)$xml->arch,
+                'source' => (string)$xml->source,
+                'summary' => (string)$xml->summary,
+                'description' => (string)$xml->description,
+                'size' => (string)$xml->size,
+                'mtime' => (string)$xml->mtime,
+            ];
+
+            return $fileinfo;
+        } catch (ClientException $e) {
+            // Some s390x RPMs don't have fileinfo
+            return null;
+        }
     }
 }

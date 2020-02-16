@@ -20,8 +20,8 @@ class HomeController extends Controller
             $keywords = preg_split("/[\s,-_.]+/", $request->q);
             if ($keywords) {
                 $client = new Client(config('obs.apiroot'), config('obs.username'), config('obs.password'));
-                $binaries = $client->searchBinaries($keywords);
-                return view('search', compact('binaries'));
+                $binaries = $client->searchBinaries($keywords, $request->cookie('distro'));
+                return view('search')->with('binaries', $binaries);
             }
         }
         return view('home');

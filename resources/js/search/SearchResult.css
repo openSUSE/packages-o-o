@@ -1,3 +1,17 @@
 .search-result {
     display: flex;
+    height: calc(100vh - 56px);
+    align-items: stretch;
+}
+
+.search-result > div {
+    overflow: auto;
+}
+
+.search-result > .list-group {
+    flex: 0 1 300px;
+}
+
+.search-result > .package-details {
+    flex: 1 1 600px;
 }
