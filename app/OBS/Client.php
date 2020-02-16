@@ -37,6 +37,29 @@ class Client
     }
 
     /**
+     * Filter out the following binaries:
+     * 1. Ghost packages: the project has been deleted but binaries still exist.
+     * 2. -debuginfo packages: only experts need it.
+     * 3. -buildsymbols packages: only experts need it.
+     * 4. -debugsource packages: only exports need it.
+     */
+    public static function filterBinaries($binaries)
+    {
+        $new_array = [];
+        foreach ($binaries as $binary) {
+            if (
+                isset($binary['project'], $binary['package'])
+                && substr($binary['name'], -13) !== '-buildsymbols'
+                && substr($binary['name'], -10) !== '-debuginfo'
+                && substr($binary['name'], -12) !== '-debugsource'
+                ) {
+                $new_array[] = $binary;
+            }
+        };
+        return $new_array;
+    }
+
+    /**
      * Search published binaries in OBS instance.
      *
      * @param string[] $keywords
@@ -66,7 +89,7 @@ class Client
             $binaries[] = $binary['@attributes'];
         }
 
-        return $binaries;
+        return self::filterBinaries($binaries);
     }
 
     public function fetchBinaryFileInfo($binary)
