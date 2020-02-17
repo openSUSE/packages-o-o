@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import './SearchResult.css';
-import { getPackageNames, getProjectNames, getBinaries, getBinaryNames } from './binaries';
+import { getPackageNames, getProjectNames, getBinary, getBinaryNames } from './binaries';
 import BinaryNamesList from './BinaryNamesList';
 import ProjectsList from './ProjectsList';
 import PackagesList from './PackagesList';
@@ -25,14 +25,14 @@ export default function SearchResult() {
 
     const projects = getProjectNames(binaries, packageName);
     const binaryNames = getBinaryNames(binaries, packageName, project);
-    const packageBinaries = getBinaries(binaries, packageName, project, binaryName);
+    const binary = getBinary(binaries, packageName, project, binaryName);
 
     return (
         <div className="card-group search-result">
             <PackagesList packages={packages} selected={packageName} select={selectPackageName} />
             <ProjectsList projects={projects} selected={project} select={selectProject} />
             <BinaryNamesList names={binaryNames} selected={binaryName} select={selectBinaryName} />
-            <PackageDetails binaries={packageBinaries} />
+            <PackageDetails binary={binary} />
         </div>
     );
 }
