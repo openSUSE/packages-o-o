@@ -11,6 +11,6 @@ return [
         'openSUSE:Leap:15.0' => 'openSUSE Leap 15.0',
     ],
     'archs' => [
-        'x86_64', 'i686', 'aarch64', 'armv7hl', 'ppc64le'
+        'x86_64', 'i586', 'aarch64', 'armv7hl', 'ppc64le'
     ]
 ];
