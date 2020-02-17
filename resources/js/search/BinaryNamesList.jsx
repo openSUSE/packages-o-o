@@ -1,8 +1,8 @@
 import React from 'react';
 
 export default function BinaryNamesList({ names, selected, select }) {
-    return <div class="card projects-list">
-        <div class="card-header">
+    return <div className="card projects-list">
+        <div className="card-header">
             Built Packages
         </div>
         <div className="list-group list-group-flush">

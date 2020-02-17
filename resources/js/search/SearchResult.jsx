@@ -7,7 +7,6 @@ import ProjectsList from './ProjectsList';
 import PackagesList from './PackagesList';
 import PackageDetails from './PackageDetails';
 
-console.log(binaries);
 const packages = getPackageNames(binaries);
 
 export default function SearchResult() {

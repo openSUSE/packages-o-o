@@ -6,7 +6,7 @@ export default function PackageDetails({ binaries }) {
             Package Details
         </div>
         <div className="card-body">
-            {binaries.map(b => <p>{b.arch} {b.version}</p>)}
+            {binaries.map(b => <p key={b.filename}>{b.arch} {b.version}</p>)}
         </div>
     </div>
 }

@@ -1,8 +1,8 @@
 import React from 'react';
 
 export default function ProjectsList({ projects, selected, select }) {
-    return <div class="card projects-list">
-        <div class="card-header">
+    return <div className="card projects-list">
+        <div className="card-header">
             Vendor Projects
         </div>
         <div className="list-group list-group-flush">
