@@ -43,6 +43,7 @@ class Client
      * 3. -buildsymbols packages: only experts need them.
      * 4. -debuginfo packages: only exports need them.
      * 5. -debugsource packages: only experts need them.
+     * 6. Maintenance packages: not for installation.
      */
     public static function filterBinaries($binaries)
     {
@@ -54,10 +55,40 @@ class Client
                 && substr($binary['name'], -10) !== '-debuginfo'
                 && substr($binary['name'], -12) !== '-debugsource'
                 && $binary['arch'] !== 'src'
-                ) {
+                && substr($binary['project'], 0, 21) !== 'openSUSE:Maintenance:'
+            ) {
                 $new_array[] = $binary;
             }
         };
+        return $new_array;
+    }
+
+    /**
+     * Merge patchinfo into binaries (Leap)
+     * Binaries in openSUSE:Leap:15.x:Update have @project=patchinfo.xxx, but we
+     * want them to be the actual source package.
+     */
+    public static function mergeBinaryPatchInfo($binaries)
+    {
+        $package_names = [];
+        $all_package_names = [];
+        foreach ($binaries as $binary) {
+            if (substr($binary['project'], 0, 14) === 'openSUSE:Leap:' && substr($binary['project'], -7) !== ':Update') {
+                $package_names[$binary['name']] = $binary['package'];
+            }
+        }
+        $new_array = [];
+        foreach ($binaries as $binary) {
+            if (substr($binary['package'], 0, 10) === 'patchinfo.') {
+                // We assume source package names won't change in release lifetime
+                if (isset($package_names[$binary['name']])) {
+                    $binary['package'] = $package_names[$binary['name']];
+                }
+                // If the package is new addition after the release, we have to
+                // keep patchinfo source package names.
+            }
+            $new_array[] = $binary;
+        }
         return $new_array;
     }
 
@@ -72,19 +103,32 @@ class Client
     public function searchBinaries($keywords, $distro, $arch)
     {
         $query_string = join("','", $keywords);
+
         if (empty($distro)) {
             $distro = 'openSUSE:Factory';
         }
+
         if (empty($arch)) {
             $arch = 'x86_64';
         }
-        $xpath = "contains-ic(@name, '$query_string') and (@arch='$arch' or @arch='noarch') and path/project='$distro'";
 
-        $res = $this->request('GET', '/search/published/binary/id', [
-            'query' => [
-                'match' => $xpath
-            ]
-        ]);
+        $project_string = "path/project='$distro' or path/project='$distro:NonFree'";
+
+        // TODO: fix ARM and PowerPC search results
+
+        $xpath = "contains-ic(@name, '$query_string') and (@arch='$arch' or @arch='noarch') and ($project_string)";
+
+        try {
+            $res = $this->request('GET', '/search/published/binary/id', [
+                'query' => [
+                    'match' => $xpath
+                ]
+            ]);
+        } catch (ClientException $e) {
+            // Some query string cause OBS API limit errors
+            abort(500, 'Failed to communicate with OBS.');
+        }
+
         $body = $res->getBody();
 
         $xml = new SimpleXMLElement($body);
@@ -95,7 +139,11 @@ class Client
             $binaries[] = $binary['@attributes'];
         }
 
-        return self::filterBinaries($binaries);
+        $binaries = self::filterBinaries($binaries);
+        if (substr($distro, 0, 14) === 'openSUSE:Leap:') {
+            $binaries = self::mergeBinaryPatchInfo($binaries);
+        }
+        return $binaries;
     }
 
     public function fetchBinaryFileInfo($binary)
