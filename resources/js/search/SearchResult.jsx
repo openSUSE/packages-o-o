@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import './SearchResult.css';
-import { getPackageNames, getProjectNames, getBinary, getBinaryNames } from './binaries';
+import { getPackageNames, getProjectNames, getBinary, getBinaryNames, sortBinaries } from './binaries';
 import BinaryNamesList from './BinaryNamesList';
 import ProjectsList from './ProjectsList';
 import PackagesList from './PackagesList';
 import PackageDetails from './PackageDetails';
 
+binaries = sortBinaries(binaries);
 const packages = getPackageNames(binaries);
 
 export default function SearchResult() {

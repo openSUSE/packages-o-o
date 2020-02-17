@@ -1,5 +1,35 @@
 import { uniq } from 'lodash';
 
+export function sortBinaries(binaries) {
+    return binaries.sort(compareBinaries);
+}
+
+export function compareBinaries(a, b) {
+    let diff = getProjectWeight(a.project) - getProjectWeight(b.project);
+    if (diff !== 0) {
+        return diff;
+    }
+    diff = countDash(a.name) - countDash(b.name);
+    if (diff !== 0) {
+        return diff;
+    }
+    return a.name.length - b.name.length;
+}
+
+function getProjectWeight(project) {
+    if (project.indexOf('openSUSE:') === 0) {
+        return 0;
+    } else if (project.indexOf('home:') === 0) {
+        return 2;
+    } else {
+        return 1;
+    }
+}
+
+function countDash(str) {
+    return str.replace(/[^-]/g, "").length;
+}
+
 export function getPackageNames(binaries) {
     return uniq(binaries.map(b => b.package));
 }
