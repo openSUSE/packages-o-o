@@ -114,7 +114,7 @@ class Client
 
         $project_string = "path/project='$distro' or path/project='$distro:NonFree'";
 
-        // TODO: fix ARM and PowerPC search results
+        // TODO: fix ARM and PowerPC search results (missing :Leap and :Factory packages)
 
         $xpath = "contains-ic(@name, '$query_string') and (@arch='$arch' or @arch='noarch') and ($project_string)";
 
