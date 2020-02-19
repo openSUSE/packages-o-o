@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import './SearchResult.css';
-import { getPackageNames, getProjectNames, getBinary, getBinaryNames, sortBinaries } from './binaries';
-import BinaryNamesList from './BinaryNamesList';
+import { getProjects, getBinary, getNames, sortBinaries } from './binaries';
+import NamesList from './NamesList';
 import ProjectsList from './ProjectsList';
-import PackagesList from './PackagesList';
 import PackageDetails from './PackageDetails';
 
 binaries = sortBinaries(binaries);
-const packages = getPackageNames(binaries);
+const names = getNames(binaries);
 
 export default function SearchResult() {
     if (!binaries.length) {
@@ -20,20 +19,19 @@ export default function SearchResult() {
         </div>
     }
 
-    const [packageName, selectPackageName] = useState('');
-    const [project, selectProject] = useState('');
-    const [binaryName, selectBinaryName] = useState('');
+    const isDesktop = window.innerWidth > 768;
 
-    const projects = getProjectNames(binaries, packageName);
-    const binaryNames = getBinaryNames(binaries, packageName, project);
-    const binary = getBinary(binaries, packageName, project, binaryName);
+    const [name, selectName] = useState('');
+    const [project, selectProject] = useState('');
+
+    const projects = getProjects(binaries, name);
+    const binary = getBinary(binaries, name, project);
 
     return (
         <div className="card-group search-result">
-            <PackagesList packages={packages} selected={packageName} select={selectPackageName} />
-            <ProjectsList projects={projects} selected={project} select={selectProject} />
-            <BinaryNamesList names={binaryNames} selected={binaryName} select={selectBinaryName} />
-            <PackageDetails binary={binary} />
+            {(isDesktop || !name) && <NamesList names={names} selected={name} select={selectName} />}
+            {(isDesktop || (!!name && !project)) && <ProjectsList projects={projects} selected={project} select={selectProject} back={() => selectName()} />}
+            {(isDesktop || !!project) && <PackageDetails binary={binary} back={() => selectProject()} />}
         </div>
     );
 }

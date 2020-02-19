@@ -1,11 +1,11 @@
 import React, { Fragment } from 'react';
 import { getYastUrl, getZypperCommand, getRpmUrl, getObsUrl } from './binaries';
 
-export default function PackageDetails({ binary }) {
+export default function PackageDetails({ binary, back }) {
 
     return <div className="card package-details">
         <div className="card-header">
-            Package Details
+            <button className="btn btn-secondary d-lg-none" onClick={() => back()}>Back</button> Package Details
         </div>
         <div className="card-body">
             {binary && <Fragment>

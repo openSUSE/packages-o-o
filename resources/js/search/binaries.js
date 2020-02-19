@@ -30,20 +30,24 @@ function countDash(str) {
     return str.replace(/[^-]/g, "").length;
 }
 
-export function getPackageNames(binaries) {
-    return uniq(binaries.map(b => b.package));
+export function getNames(binaries) {
+    return uniq(binaries.map(b => b.name));
 }
 
-export function getProjectNames(binaries, packageName) {
-    return uniq(binaries.filter(b => b.package === packageName).map(b => b.project));
+export function getProjects(binaries, name) {
+    return uniq(binaries.filter(b => b.name === name).map(b => b.project));
 }
 
-export function getBinaryNames(binaries, packageName, projectName) {
-    return uniq(binaries.filter(b => b.package === packageName && b.project === projectName).map(b => b.name));
-}
-
-export function getBinary(binaries, packageName, projectName, binaryName) {
-    return binaries.find(b => b.package === packageName && b.project === projectName && b.name === binaryName);
+/**
+ * Get the binary from a specific project. If there are multiple versions, return
+ * the first (latest).
+ * @param {Object[]} binaries
+ * @param {string} name
+ * @param {string} project
+ * @returns {Object}
+ */
+export function getBinary(binaries, name, project) {
+    return binaries.find(b => b.project === project && b.name === name);
 }
 
 export function getYastUrl(binary) {

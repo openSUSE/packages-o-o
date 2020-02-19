@@ -1,9 +1,9 @@
 import React from 'react';
 
-export default function BinaryNamesList({ names, selected, select }) {
+export default function NamesList({ names, selected, select }) {
     return <div className="card projects-list">
         <div className="card-header">
-            Built Packages
+            Packages
         </div>
         <div className="list-group list-group-flush">
             {names.map(n => (

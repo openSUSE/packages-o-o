@@ -64,35 +64,6 @@ class Client
     }
 
     /**
-     * Merge patchinfo into binaries (Leap)
-     * Binaries in openSUSE:Leap:15.x:Update have @project=patchinfo.xxx, but we
-     * want them to be the actual source package.
-     */
-    public static function mergeBinaryPatchInfo($binaries)
-    {
-        $package_names = [];
-        $all_package_names = [];
-        foreach ($binaries as $binary) {
-            if (substr($binary['project'], 0, 14) === 'openSUSE:Leap:' && substr($binary['project'], -7) !== ':Update') {
-                $package_names[$binary['name']] = $binary['package'];
-            }
-        }
-        $new_array = [];
-        foreach ($binaries as $binary) {
-            if (substr($binary['package'], 0, 10) === 'patchinfo.') {
-                // We assume source package names won't change in release lifetime
-                if (isset($package_names[$binary['name']])) {
-                    $binary['package'] = $package_names[$binary['name']];
-                }
-                // If the package is new addition after the release, we have to
-                // keep patchinfo source package names.
-            }
-            $new_array[] = $binary;
-        }
-        return $new_array;
-    }
-
-    /**
      * Search published binaries in OBS instance.
      *
      * @param string[] $keywords
@@ -140,9 +111,7 @@ class Client
         }
 
         $binaries = self::filterBinaries($binaries);
-        if (substr($distro, 0, 14) === 'openSUSE:Leap:') {
-            $binaries = self::mergeBinaryPatchInfo($binaries);
-        }
+
         return $binaries;
     }
 

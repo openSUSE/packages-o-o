@@ -1,9 +1,9 @@
 import React from 'react';
 
-export default function ProjectsList({ projects, selected, select }) {
+export default function ProjectsList({ projects, selected, select, back }) {
     return <div className="card projects-list">
         <div className="card-header">
-            Vendor Projects
+            <button className="btn btn-secondary d-lg-none" onClick={() => back()}>Back</button> Vendors
         </div>
         <div className="list-group list-group-flush">
 
