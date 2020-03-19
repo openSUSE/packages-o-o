@@ -14,3 +14,7 @@
 Auth::routes();
 
 Route::get('/', 'HomeController@index')->name('home');
+
+Route::get('/search', 'SearchController@index')->name('search');
+
+Route::get('/package/{id}', 'PackageController@show')->name('package');

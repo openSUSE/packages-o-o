@@ -64,17 +64,15 @@ class Client
     }
 
     /**
-     * Search published binaries in OBS instance.
+     * Search published binaries.
      *
      * @param string[] $keywords
      * @param string $distro
      * @param string $arch
      * @return App\OBS\OBSBinary[]
      */
-    public function searchBinaries($keywords, $distro, $arch)
+    public function searchBinaries($query, $distro, $arch)
     {
-        $query_string = join("','", $keywords);
-
         if (empty($distro)) {
             $distro = 'openSUSE:Factory';
         }
@@ -87,7 +85,7 @@ class Client
 
         // TODO: fix ARM and PowerPC search results (missing :Leap and :Factory packages)
 
-        $xpath = "contains-ic(@name, '$query_string') and (@arch='$arch' or @arch='noarch') and ($project_string)";
+        $xpath = "$query and (@arch='$arch' or @arch='noarch') and ($project_string)";
 
         try {
             $res = $this->request('GET', '/search/published/binary/id', [
@@ -113,6 +111,37 @@ class Client
         $binaries = self::filterBinaries($binaries);
 
         return $binaries;
+    }
+
+    /**
+     * Fetch published binaries by package name.
+     *
+     * @param string[] $keywords
+     * @param string $distro
+     * @param string $arch
+     * @return App\OBS\OBSBinary[]
+     */
+    public function searchBinariesByKeywords($keywords, $distro, $arch)
+    {
+        $keywords_string = join("','", $keywords);
+        $query = "contains-ic(@name, '$keywords_string')";
+
+        return self::searchBinaries($query, $distro, $arch);
+    }
+
+    /**
+     * Fetch published binaries by package name.
+     *
+     * @param string[] $keywords
+     * @param string $distro
+     * @param string $arch
+     * @return App\OBS\OBSBinary[]
+     */
+    public function searchBinariesByPackageName($package_name, $distro, $arch)
+    {
+        $query = "@name='$package_name'";
+
+        return self::searchBinaries($query, $distro, $arch);
     }
 
     public function fetchBinaryFileInfo($binary)

@@ -38,11 +38,11 @@
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <!-- Left Side Of Navbar -->
-                <form class="form-inline mr-auto" action="/">
+                <form class="form-inline mr-auto" action="/search">
                     <div id="distro-select-root" class="mr-md-2"></div>
                     <div id="arch-select-root" class="mr-md-2"></div>
                     <input class="form-control" type="search" name="q" value="{{ request('q') }}" placeholder="Search packages..." aria-label="Search">
-                    <button class="btn btn-success my-2 my-sm-0" type="submit">Search</button>
+                    <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
                 </form>
 
                 <!-- Right Side Of Navbar -->

@@ -1,0 +1,17 @@
+.search-view {
+    height: calc(100vh - 56px);
+    flex-wrap: nowrap;
+}
+
+.search-view > .card {
+    flex: 0 1 250px;
+}
+
+.search-view > .card > .list-group,
+.search-view > .card > .card-body {
+    overflow: auto;
+}
+
+.search-view > .package-details {
+    flex: 1 1 600px;
+}
