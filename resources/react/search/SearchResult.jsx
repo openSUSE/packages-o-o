@@ -6,8 +6,7 @@ import NamesList from './NamesList';
 import ProjectsList from './ProjectsList';
 import PackageDetails from './PackageDetails';
 
-binaries = sortBinaries(binaries);
-const names = getNames(binaries);
+let names;
 
 export default function SearchResult() {
     if (!binaries.length) {
@@ -38,5 +37,7 @@ export default function SearchResult() {
 
 const root = document.getElementById('search-result-root')
 if (root) {
+    binaries = sortBinaries(binaries);
+    names = getNames(binaries);
     ReactDOM.render(<SearchResult />, root);
 }
