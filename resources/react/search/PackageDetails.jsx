@@ -12,7 +12,7 @@ export default function PackageDetails({ binary, back }) {
         <div className="card package-details">
             <div className="card-header">
                 <BackButton back={back} />
-                Package Details
+                {binary.name}
             </div>
             <div className="card-body">
                 {binary && (

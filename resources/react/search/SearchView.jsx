@@ -21,7 +21,10 @@ export default function SearchResult({ binaries, names }) {
 
     const [name, selectName] = useState(names[0]);
     const projects = getProjects(binaries, name);
-    const [project, selectProject] = useState(projects[0]);
+    const [projectState, selectProject] = useState(projects[0]);
+    const project = projects.includes(projectState)
+        ? projectState
+        : projects[0];
     const binary = getBinary(binaries, name, project);
 
     return (
