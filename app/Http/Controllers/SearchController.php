@@ -20,8 +20,13 @@ class SearchController extends Controller
             'q' => 'required'
         ]);
         $keywords = preg_split("/[\s,-_.]+/", $request->q);
-        $client = new Client(config('obs.apiroot'), config('obs.username'), config('obs.password'));
-        $binaries = $client->searchBinariesByKeywords($keywords, $request->cookie('distro'), $request->cookie('arch'));
-        return view('search')->with('binaries', $binaries);
+
+        $obs_client = new Client(config('obs.apiroot'), config('obs.username'), config('obs.password'));
+        $obs_binaries = $obs_client->searchBinariesByKeywords($keywords, $request->cookie('distro'), $request->cookie('arch'));
+
+        $pmbs_client = new Client(config('pmbs.apiroot'), config('pmbs.username'), config('pmbs.password'));
+        $pmbs_binaries = $pmbs_client->searchBinariesByKeywords($keywords, $request->cookie('distro'), $request->cookie('arch'));
+
+        return view('search')->with('binaries', array_merge($pmbs_binaries, $obs_binaries));
     }
 }

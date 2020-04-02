@@ -1,4 +1,4 @@
-import { uniq } from 'lodash';
+import { uniq } from "lodash";
 
 export function sortBinaries(binaries) {
     return binaries.sort(compareBinaries);
@@ -17,9 +17,9 @@ export function compareBinaries(a, b) {
 }
 
 function getProjectWeight(project) {
-    if (project.indexOf('openSUSE:') === 0) {
+    if (project.indexOf("openSUSE:") === 0) {
         return 0;
-    } else if (project.indexOf('home:') === 0) {
+    } else if (project.indexOf("home:") === 0) {
         return 2;
     } else {
         return 1;
@@ -51,22 +51,43 @@ export function getBinary(binaries, name, project) {
 }
 
 export function getYastUrl(binary) {
-    const { project, repository, name } = binary;
-    return `https://software.opensuse.org/ymp/${project}/${repository}/${name}.ymp`
+    const { baseproject, name, project, repository } = binary;
+    if (baseproject.startsWith("openSUSE.org:")) {
+        return `https://packman.links2linux.org/install/${name}`;
+    }
+    return `https://software.opensuse.org/ymp/${project}/${repository}/${name}.ymp`;
 }
 
 export function getRpmUrl(binary) {
-    const { project, repository, arch, filename } = binary;
+    const { arch, baseproject, filename, project, repository } = binary;
+    if (baseproject.startsWith("openSUSE.org:")) {
+        return `https://packman.links2linux.org/download/${binary.package}/${filename}`;
+    }
     return `https://download.opensuse.org/repositories/${project}/${repository}/${arch}/${filename}`;
 }
 
 export function getObsUrl(binary) {
+    if (binary.baseproject.startsWith("openSUSE.org:")) {
+        return `https://pmbs.links2linux.de/package/show/${binary.project}/${binary.package}`;
+    }
     return `https://build.opensuse.org/package/show/${binary.project}/${binary.package}`;
 }
 
 export function getZypperCommand(binary) {
     const { project, repository, name } = binary;
-    return (`sudo zypper addrepo --enable --refresh https://download.opensuse.org/repositories/${project}/${repository}/${project}.repo
-sudo zypper refresh
-sudo zypper install ${name}`);
+    const lines = [];
+    if (!project.startsWith("openSUSE")) {
+        if (binary.baseproject.startsWith("openSUSE.org:")) {
+            lines.push(
+                `sudo zypper addrepo --enable --refresh https://ftp.gwdg.de/pub/linux/misc/packman/suse/${repository}/packman.repo`
+            );
+        } else {
+            lines.push(
+                `sudo zypper addrepo --enable --refresh https://download.opensuse.org/repositories/${project}/${repository}/${project}.repo`
+            );
+        }
+        lines.push("sudo zypper refresh");
+    }
+    lines.push(`sudo zypper install ${name}`);
+    return lines.join("\n");
 }

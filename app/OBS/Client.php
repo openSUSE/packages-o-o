@@ -44,6 +44,7 @@ class Client
      * 4. -debuginfo packages: only exports need them.
      * 5. -debugsource packages: only experts need them.
      * 6. Maintenance packages: not for installation.
+     * 7. Branched packages: usually unstable or out-dated.
      */
     public static function filterBinaries($binaries)
     {
@@ -56,6 +57,7 @@ class Client
                 && substr($binary['name'], -12) !== '-debugsource'
                 && $binary['arch'] !== 'src'
                 && substr($binary['project'], 0, 21) !== 'openSUSE:Maintenance:'
+                && strpos($binary['project'], ':branches:') === false
             ) {
                 $new_array[] = $binary;
             }
@@ -75,6 +77,11 @@ class Client
     {
         if (empty($distro)) {
             $distro = 'openSUSE:Factory';
+        }
+
+        if (strpos($this->apiroot, 'opensuse.org') === false) {
+            $distro = str_replace('Factory', 'Tumbleweed', $distro);
+            $distro = 'openSUSE.org:'.$distro;
         }
 
         if (empty($arch)) {
