@@ -53,7 +53,7 @@ export function getBinary(binaries, name, project) {
 export function getYastUrl(binary) {
     const { baseproject, name, project, repository } = binary;
     if (baseproject.startsWith("openSUSE.org:")) {
-        return `https://packman.links2linux.org/install/${name}`;
+        return `http://packman.links2linux.org/install/${name}`;
     }
     return `https://software.opensuse.org/ymp/${project}/${repository}/${name}.ymp`;
 }
@@ -61,7 +61,7 @@ export function getYastUrl(binary) {
 export function getRpmUrl(binary) {
     const { arch, baseproject, filename, project, repository } = binary;
     if (baseproject.startsWith("openSUSE.org:")) {
-        return `https://packman.links2linux.org/download/${binary.package}/${filename}`;
+        return `http://packman.links2linux.org/download/${binary.package}/${filename}`;
     }
     return `https://download.opensuse.org/repositories/${project}/${repository}/${arch}/${filename}`;
 }
