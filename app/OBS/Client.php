@@ -97,7 +97,8 @@ class Client
         try {
             $res = $this->request('GET', '/search/published/binary/id', [
                 'query' => [
-                    'match' => $xpath
+                    'match' => $xpath,
+                    'limit' => 0, // fix query errors with php, test, 0ad, etc.
                 ]
             ]);
         } catch (ClientException $e) {
