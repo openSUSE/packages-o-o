@@ -196,4 +196,25 @@ class Client
             return null;
         }
     }
+
+    public function fetchLatestUpdatedPackages($limit = 10)
+    {
+        $res = $this->request('GET', '/statistics/latest_updated', [
+            'query' => [
+                'limit' => $limit,
+            ],
+        ]);
+        $body = $res->getBody();
+
+        $xml = new SimpleXMLElement($body);
+
+        $items = $xml->xpath('package');
+        $packages = [];
+        foreach ($items as $item) {
+            $package = (array)$item;
+            $packages[] = $package['@attributes'];
+        }
+
+        return $packages;
+    }
 }

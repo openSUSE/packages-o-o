@@ -15,6 +15,9 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $obs_client = new Client(config('obs.apiroot'), config('obs.username'), config('obs.password'));
+        $latest_updated_packages = $obs_client->fetchLatestUpdatedPackages(20);
+
+        return view('home')->with('latest_updated_packages', $latest_updated_packages);
     }
 }
