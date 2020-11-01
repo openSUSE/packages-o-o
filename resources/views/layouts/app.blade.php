@@ -57,8 +57,16 @@
         <div class="collapse navbar-collapse" id="navbar-collapse">
             <!-- Left Side Of Navbar -->
             <form class="form-inline mr-auto" action="/search">
-                <div id="distro-select-root" class="mr-md-2"></div>
-                <div id="arch-select-root" class="mr-md-2"></div>
+                <select id="distro-select" name="distro" class="custom-select mr-md-2">
+                    @foreach (config('obs.distros') as $value => $name)
+                        <option value="{{ $value }}" {{ Cookie::get('distro') === $value ? 'selected' : '' }}>{{ $name }}</option>
+                    @endforeach
+                </select>
+                <select id="arch-select" name="arch" class="custom-select mr-md-2">
+                    @foreach (config('obs.archs') as $value)
+                        <option value="{{ $value }}" {{ Cookie::get('arch') === $value ? 'selected' : '' }}>{{ $value }}</option>
+                    @endforeach
+                </select>
                 <div class="input-group">
                     <input class="form-control" type="search" name="q" value="{{ request('q') }}" placeholder="Search packages..." aria-label="Search">
                     <div class="input-group-append">
