@@ -197,15 +197,8 @@ class Client
         }
     }
 
-    public function fetchLatestUpdatedPackages($limit = 10)
+    public function parsePackages($body)
     {
-        $res = $this->request('GET', '/statistics/latest_updated', [
-            'query' => [
-                'limit' => $limit,
-            ],
-        ]);
-        $body = $res->getBody();
-
         $xml = new SimpleXMLElement($body);
 
         $items = $xml->xpath('package');
@@ -216,5 +209,42 @@ class Client
         }
 
         return $packages;
+    }
+
+    public function fetchLatestAddedPackages($limit = 10)
+    {
+        $res = $this->request('GET', '/statistics/latest_added', [
+            'query' => [
+                'limit' => $limit + 5,
+            ],
+        ]);
+        $body = $res->getBody();
+        return array_slice($this->parsePackages($body), 0, $limit);
+    }
+
+    public function fetchLatestUpdatedPackages($limit = 10)
+    {
+        $res = $this->request('GET', '/statistics/latest_updated', [
+            'query' => [
+                'limit' => $limit + 5,
+            ],
+        ]);
+        $body = $res->getBody();
+        return array_slice($this->parsePackages($body), 0, $limit);
+    }
+
+    /**
+     * This API is currently broken. Don't use it.
+     */
+    public function fetchMostDownloadedPackages($limit = 10)
+    {
+        $res = $this->request('GET', '/statistics/download_counter', [
+            'query' => [
+                'group_by' => 'package',
+                'limit' => $limit,
+            ],
+        ]);
+        $body = $res->getBody();
+        return $this->parsePackages($body);
     }
 }
